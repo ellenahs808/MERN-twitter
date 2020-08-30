@@ -1,12 +1,14 @@
 const express = require("express");
 const app = express();
-const db = require("./config/keys").mongoURI;
 const mongoose = require("mongoose");
+const db = require("./config/keys").mongoURI;
+const passport = require("passport");
+const User = require("./models/User");
+const bodyParser = require("body-parser");
 
-// const users = require("./routes/api/users");
-// const tweets = require("./routes/api/tweets");
-// const bodyParser = require("body-parser");
 
+const users = require("./routes/api/users");
+const tweets = require("./routes/api/tweets");
 
 
 
@@ -17,16 +19,29 @@ mongoose
 
 
 
-app.get("/", (req, res) => {
-    debugger
-    res.send("Hello World!");
-});
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 
-// app.use("/api/users", users);
-// app.use("/api/tweets", tweets);
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
+
+// app.get("/", (req, res) => {
+//     const user = new User({
+//         handle: "john",
+//         email: "john@test.com",
+//         password: "hunter12"
+//     })
+
+//     user.save()
+//     res.send("Hello World!");
+// });
+
+app.use(passport.initialize());
+app.use("/api/users", users);
+app.use("/api/tweets", tweets);
+
+
+
+require("./config/passport")(passport);
 
 
 
